@@ -12,12 +12,19 @@ const commandLog: Array<{
   args: Parameters<(typeof mutation)[keyof typeof mutation]>[0];
 }> = [];
 
+// Store refetch functions to invalidate all whenever we pull
+const queryRefetchFns = new Set<() => void>();
+
 function run(query: SQLStatement, selectedDb: SQLocal = db) {
   return selectedDb.sql(query.sql, ...query.values);
 }
 
 export async function pull() {
   const res = await fetch(`/api/pull`);
+  if (!res.ok) {
+    console.error("Failed to pull");
+    return;
+  }
   const payload = await res.json();
   for (const command of payload.run) {
     const stmt = mutation[command.mutator as keyof typeof mutation](
@@ -27,6 +34,7 @@ export async function pull() {
   }
   const file = await referenceDb.getDatabaseFile();
   await db.overwriteDatabaseFile(await file.arrayBuffer());
+  invalidateAll();
   console.log("pulled");
 }
 
@@ -56,10 +64,8 @@ export function useQuery(
   }, [query]);
 
   useEffect(() => {
-    // Add refetch function when component mounts
     queryRefetchFns.add(refetch);
 
-    // Remove it when component unmounts
     return () => {
       queryRefetchFns.delete(refetch);
     };
@@ -96,4 +102,8 @@ export async function runMigrations() {
     await run(migration, referenceDb);
     await run(migration, db);
   }
+}
+
+export function invalidateAll() {
+  queryRefetchFns.forEach((refetch) => refetch());
 }
