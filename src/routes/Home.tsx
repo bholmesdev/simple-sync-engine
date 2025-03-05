@@ -1,4 +1,4 @@
-import { mutate, useQuery, pull } from "../lib/db.client";
+import { mutate, useQuery, pull, reset, invalidateAll } from "../lib/db.client";
 
 export function Home() {
   const [tasks, refetchTasks] = useQuery("getTasks", {});
@@ -18,11 +18,11 @@ export function Home() {
         <button
           onClick={async () => {
             await pull();
-            refetchTasks();
           }}
         >
           Pull
         </button>
+        <button onClick={reset}>Reset</button>
       </div>
       <pre>{JSON.stringify(tasks, null, 2)}</pre>
     </div>

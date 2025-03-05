@@ -1,4 +1,4 @@
-import type { SQLStatement } from "sql-template-strings";
+import sql, { type SQLStatement } from "sql-template-strings";
 import { SQLocal } from "sqlocal";
 import { getMigrations } from "./db";
 import { useState, useEffect } from "react";
@@ -54,7 +54,26 @@ export function useQuery(
   useEffect(() => {
     refetch();
   }, [query]);
+
+  useEffect(() => {
+    // Add refetch function when component mounts
+    queryRefetchFns.add(refetch);
+
+    // Remove it when component unmounts
+    return () => {
+      queryRefetchFns.delete(refetch);
+    };
+  }, [refetch]);
+
   return [data, refetch];
+}
+
+export async function reset() {
+  const res = await fetch("/api/reset");
+  if (!res.ok) console.error("Failed to reset");
+  await run(sql`DROP TABLE IF EXISTS task`, referenceDb);
+  await run(sql`DROP TABLE IF EXISTS task`, db);
+  window.location.reload();
 }
 
 export function useMigrations() {
