@@ -70,7 +70,10 @@ export function useQuery(
 
 export async function reset() {
   const res = await fetch("/api/reset");
-  if (!res.ok) console.error("Failed to reset");
+  if (!res.ok) {
+    console.error("Failed to reset");
+    return;
+  }
   await run(sql`DROP TABLE IF EXISTS task`, referenceDb);
   await run(sql`DROP TABLE IF EXISTS task`, db);
   window.location.reload();
