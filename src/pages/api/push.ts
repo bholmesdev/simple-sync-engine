@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
-import { mutation, store } from "../../store";
 import { z } from "zod";
+import { mutation } from "../../queries";
+import { run } from "../../lib/db.server";
 
 const payloadSchema = z.object({
   mutator: z.string().refine((mutator) => mutator in mutation, {
@@ -21,7 +22,8 @@ export const POST: APIRoute = async ({ request }) => {
   const { mutator, args } = payload.data;
   const mutatorFn = mutation[mutator as keyof typeof mutation];
 
-  mutatorFn(args);
+  const stmt = mutatorFn(args);
+  run(stmt);
 
   return new Response("Mutation successful", { status: 200 });
 };

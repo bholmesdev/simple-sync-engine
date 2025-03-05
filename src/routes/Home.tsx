@@ -1,15 +1,14 @@
-import { mutation, query } from "../queries";
-import { run, useQuery } from "../lib/db.client";
+import { mutate, useQuery } from "../lib/db.client";
 
 export function Home() {
-  const [tasks, refetchTasks] = useQuery(query.getTasks());
+  const [tasks, refetchTasks] = useQuery("getTasks", {});
 
   return (
     <div>
       <h1>Hello World</h1>
       <button
         onClick={async () => {
-          await run(mutation.createTask({ title: "test" }));
+          await mutate("createTask", { title: "test" });
           refetchTasks();
         }}
       >

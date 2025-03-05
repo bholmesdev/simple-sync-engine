@@ -2,19 +2,33 @@ import type { SQLStatement } from "sql-template-strings";
 import { SQLocal } from "sqlocal";
 import { getMigrations } from "./db";
 import { useState, useEffect } from "react";
+import { mutation, query } from "../queries";
 
 const db = new SQLocal("database.sqlite3");
 
-export function run(query: SQLStatement) {
+function run(query: SQLStatement) {
   return db.sql(query.sql, ...query.values);
 }
 
+export async function mutate(
+  mutator: keyof typeof mutation,
+  args: Parameters<(typeof mutation)[keyof typeof mutation]>[0]
+) {
+  const res = await run(mutation[mutator](args));
+  fetch(`/api/push`, {
+    method: "POST",
+    body: JSON.stringify({ mutator, args }),
+  }).then((res) => console.log("pushed mutation", mutator, res.json()));
+  return res;
+}
+
 export function useQuery(
-  query: SQLStatement
+  name: keyof typeof query,
+  args: Parameters<(typeof query)[keyof typeof query]>[0]
 ): [data: any[], refetch: () => void] {
   const [data, setData] = useState<any[]>([]);
   function refetch() {
-    run(query).then(setData);
+    run(query[name](args)).then(setData);
   }
   useEffect(() => {
     refetch();

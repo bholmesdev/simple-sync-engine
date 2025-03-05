@@ -1,7 +1,7 @@
 import sql from "sql-template-strings";
 
 export const query = {
-  getTasks() {
+  getTasks(args: {}) {
     return sql`SELECT * FROM task`;
   },
 };

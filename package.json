@@ -3,7 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "pnpm db:create && astro dev",
+    "db:create": "tsx scripts/create-server-db.ts",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -25,6 +26,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.12"
+    "@types/better-sqlite3": "^7.6.12",
+    "tsx": "^4.19.3"
   }
 }
