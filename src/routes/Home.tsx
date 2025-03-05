@@ -5,15 +5,16 @@ export function Home() {
 
   return (
     <div>
-      <h1>Hello World</h1>
-      <div className="flex gap-2">
+      <title>Home</title>
+      <h1>Simple Sync Engine</h1>
+      <div className="flex gap-4">
         <button
           onClick={async () => {
             await mutate("createTask", { title: "test" });
             refetchTasks();
           }}
         >
-          Add test task
+          Add
         </button>
         <button
           onClick={async () => {
