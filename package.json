@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "pnpm db:create && astro dev",
-    "db:create": "tsx scripts/create-server-db.ts",
+    "db:create": "rm -rf database.sqlite3 && tsx scripts/create-server-db.ts",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
