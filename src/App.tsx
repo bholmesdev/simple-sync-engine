@@ -1,14 +1,15 @@
-import { mutation } from "./store";
-import { useCount } from "./store.client";
+import { BrowserRouter, Routes, Route } from "react-router";
+import { Home } from "./routes/Home";
+import { useMigrations } from "./lib/db.client";
 
 export function App() {
-  const [count, addCount] = useCount();
-
+  const isMigrationsLoaded = useMigrations();
+  if (!isMigrationsLoaded) return <div>Initializing DB...</div>;
   return (
-    <div>
-      <h1>Hello World</h1>
-      <button onClick={() => addCount(1)}>Add Count</button>
-      <p>Count: {count}</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
