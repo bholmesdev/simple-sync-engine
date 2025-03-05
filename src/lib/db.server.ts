@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import sql, { SQLStatement } from "sql-template-strings";
-import { getMigrations } from "./db";
+import { getMigrations } from "./migrations";
 
 export const db = new Database("database.sqlite3");
 

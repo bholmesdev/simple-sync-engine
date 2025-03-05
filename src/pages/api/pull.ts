@@ -3,15 +3,12 @@ import { commandLog } from "./_log";
 
 export const GET: APIRoute = async ({ cookies, url }) => {
   const latestLogIndexCookie = cookies.get("state");
-  const reset = url.searchParams.get("reset");
   let latestLogIndex = -1;
-  if (!reset && latestLogIndexCookie) {
+  if (latestLogIndexCookie) {
     latestLogIndex = latestLogIndexCookie.number();
   }
 
-  console.log({ latestLogIndex });
-
-  const run = commandLog.filter((command, idx) => idx > latestLogIndex);
+  const run = commandLog.slice(latestLogIndex + 1);
   cookies.set("state", String(commandLog.length - 1));
 
   return new Response(JSON.stringify({ run }), { status: 200 });

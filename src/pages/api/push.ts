@@ -22,9 +22,9 @@ export const POST: APIRoute = async ({ request }) => {
 
   const { mutator, args } = payload.data;
   const mutatorFn = mutation[mutator as keyof typeof mutation];
+
   commandLog.push({ mutator, args });
-  const stmt = mutatorFn(args);
-  run(stmt);
+  run(mutatorFn(args));
 
   return new Response("Mutation successful", { status: 200 });
 };
