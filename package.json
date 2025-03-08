@@ -6,7 +6,7 @@
     "dev": "pnpm db:create && astro dev",
     "db:create": "rm -rf database.sqlite3 && tsx scripts/create-server-db.ts",
     "build": "astro build",
-    "preview": "astro preview",
+    "start": "node production.mjs",
     "astro": "astro"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@types/react-dom": "^19.0.4",
     "astro": "^5.4.1",
     "better-sqlite3": "^11.8.1",
+    "express": "^4.21.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sql-template-strings": "^2.2.2",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",
+    "@types/express": "^5.0.0",
     "tsx": "^4.19.3"
   }
 }

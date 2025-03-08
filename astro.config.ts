@@ -8,17 +8,20 @@ export default defineConfig({
   integrations: [react()],
   output: "server",
   adapter: node({
-    mode: "standalone",
+    mode: "middleware",
   }),
 
   vite: {
     optimizeDeps: {
       exclude: ["sqlocal"],
     },
+    worker: {
+      format: "es",
+    },
     plugins: [
       tailwindcss(),
       {
-        name: "configure-vpfs-response-headers",
+        name: "configure-dev-vpfs-response-headers",
         configureServer: (server) => {
           server.middlewares.use((_req, res, next) => {
             res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
