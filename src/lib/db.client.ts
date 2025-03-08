@@ -1,6 +1,6 @@
 import sql, { type SQLStatement } from "sql-template-strings";
 import { SQLocal } from "sqlocal";
-import { getMigrations } from "./migrations";
+import { getMigrations, getResetMigrations } from "./migrations";
 import { useState, useEffect } from "react";
 import { mutation, query } from "../queries";
 
@@ -88,8 +88,10 @@ export async function reset() {
     console.error("Failed to reset");
     return;
   }
-  await run(sql`DROP TABLE IF EXISTS task`, referenceDb);
-  await run(sql`DROP TABLE IF EXISTS task`, db);
+  for (const migration of getResetMigrations()) {
+    await run(migration, referenceDb);
+    await run(migration, db);
+  }
   window.location.reload();
 }
 
