@@ -6,6 +6,7 @@ import { mutation, query } from "../queries";
 
 const referenceDb = new SQLocal("reference-database.sqlite3");
 const db = new SQLocal("database.sqlite3");
+const clientId = crypto.randomUUID();
 
 const commandLog: Array<{
   mutator: keyof typeof mutation;
@@ -20,13 +21,13 @@ function run(query: SQLStatement, selectedDb: SQLocal = db) {
 }
 
 export async function pull() {
-  const res = await fetch(`/api/pull`);
+  const res = await fetch(`/api/pull?clientId=${clientId}`);
   if (!res.ok) {
     console.error("Failed to pull");
     return;
   }
-  const payload = await res.json();
-  for (const command of payload.run) {
+  const { commands, flushCount } = await res.json();
+  for (const command of commands) {
     const stmt = mutation[command.mutator as keyof typeof mutation](
       command.args
     );
@@ -34,6 +35,13 @@ export async function pull() {
   }
   const file = await referenceDb.getDatabaseFile();
   await db.overwriteDatabaseFile(await file.arrayBuffer());
+  commandLog.splice(0, flushCount);
+  for (const command of commandLog) {
+    const stmt = mutation[command.mutator as keyof typeof mutation](
+      command.args
+    );
+    await run(stmt, db);
+  }
   invalidateAll();
   console.log("pulled");
 }
@@ -46,7 +54,7 @@ export async function mutate(
   commandLog.push({ mutator, args });
   fetch(`/api/push`, {
     method: "POST",
-    body: JSON.stringify({ mutator, args }),
+    body: JSON.stringify({ clientId, mutator, args }),
   }).then((res) => console.log("pushed mutation", mutator, res.status));
   return res;
 }

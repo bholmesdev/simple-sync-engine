@@ -1,5 +1,6 @@
 {
     "mutator": "createTask",
+    "clientId": "test-runner",
     "args": {
         "title": "test called from script"
     }
