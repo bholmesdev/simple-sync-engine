@@ -9,3 +9,7 @@ export function getMigrations(): SQLStatement[] {
   )`,
   ];
 }
+
+export function getResetMigrations(): SQLStatement[] {
+  return [sql`DROP TABLE IF EXISTS task`];
+}
