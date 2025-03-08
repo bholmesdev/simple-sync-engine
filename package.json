@@ -3,10 +3,11 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "pnpm db:create && astro dev",
-    "db:create": "rm -rf database.sqlite3 && tsx scripts/create-server-db.ts",
+    "dev": "pnpm db:dev:reset && astro dev",
+    "db:create": "tsx scripts/create-server-db.ts",
+    "db:dev:reset": "rm -rf database.sqlite3 && pnpm db:create",
     "build": "astro build",
-    "start": "node production.mjs",
+    "start": "pnpm db:create && node production.mjs",
     "astro": "astro"
   },
   "dependencies": {
