@@ -2,6 +2,9 @@
   "name": "simple-sync-engine",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "pnpm db:create:dev && astro dev",
     "db:create:dev": "tsx --env-file=.env.dev scripts/create-server-db.ts",
