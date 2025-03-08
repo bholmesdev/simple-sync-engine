@@ -17,6 +17,7 @@
   "dependencies": {
     "@astrojs/node": "^9.1.2",
     "@astrojs/react": "^4.2.1",
+    "@remixicon/react": "^4.6.0",
     "@tailwindcss/vite": "^4.0.9",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
