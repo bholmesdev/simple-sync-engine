@@ -19,7 +19,7 @@ export default defineConfig({
       format: "es",
     },
     plugins: [
-      tailwindcss(),
+      tailwindcss() as any,
       {
         name: "configure-dev-vpfs-response-headers",
         configureServer: (server) => {
