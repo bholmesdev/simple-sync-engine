@@ -8,13 +8,12 @@ import {
   flushMutationLog,
   getMutationLog,
 } from "./log.client";
+import type { PullResponse } from "../pages/api/pull";
 
 export const db = new SQLocal("database.sqlite3");
 export const optimisticDb = new SQLocal("optimistic-database.sqlite3");
 
-// Unique ID used to check whether optimistic updates
-// were applied to the server.
-const clientId = crypto.randomUUID();
+const clientId = createClientId();
 
 // Store refetch functions to invalidate all whenever we pull
 const queryRefetchFns = new Set<() => void>();
@@ -118,4 +117,15 @@ async function runMigrations() {
 
 function invalidateAll() {
   queryRefetchFns.forEach((refetch) => refetch());
+}
+
+// Unique ID used to check whether optimistic updates
+// were applied to the server.
+function createClientId() {
+  let clientId = localStorage.getItem("clientId");
+  if (!clientId) {
+    clientId = crypto.randomUUID();
+    localStorage.setItem("clientId", clientId);
+  }
+  return clientId;
 }
