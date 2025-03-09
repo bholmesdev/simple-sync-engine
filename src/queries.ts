@@ -3,7 +3,7 @@ import type { Issue } from "./types";
 
 export const query = {
   getIssues(args: {}) {
-    return sql`SELECT * FROM issue`;
+    return sql`SELECT * FROM issue ORDER BY createdAt DESC`;
   },
 };
 
