@@ -7,7 +7,7 @@ export function getMigrations(): SQLStatement[] {
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     owner TEXT NOT NULL,
-    status TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'not started',
     createdAt INTEGER NOT NULL
   )`,
   ];
