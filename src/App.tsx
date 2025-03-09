@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { RiAddFill, RiCheckFill, RiCloseFill } from "@remixicon/react";
-import type { Issue } from "./types";
+import type { Issue, IssueStatus } from "./types";
 import { pull, useMigrations, useQuery, mutate } from "./lib/client";
 
 export function App() {
@@ -38,8 +38,8 @@ function Home() {
         </button>
       </nav>
       <ul>
-        {issues.map((issue, index) => (
-          <Issue
+        {issues.map((issue: Issue, index: number) => (
+          <IssueRow
             key={issue.id}
             issue={issue}
             isSelected={selectedIssue?.id === issue.id}
@@ -71,7 +71,7 @@ function Home() {
   );
 }
 
-function Issue({
+function IssueRow({
   issue,
   isSelected,
   onClick,
@@ -247,7 +247,7 @@ function IssueDialog({
   );
 }
 
-const statusOrder: Issue["status"][] = ["not started", "in progress", "done"];
+const statusOrder: IssueStatus[] = ["not started", "in progress", "done"];
 
 function StatusToggle({
   issueId,
@@ -256,7 +256,7 @@ function StatusToggle({
   showLabel = true,
 }: {
   issueId: number;
-  status: Issue["status"];
+  status: IssueStatus;
   refetchIssues: () => void;
   showLabel?: boolean;
 }) {
@@ -301,7 +301,7 @@ function useDialog(): Dialog {
   };
 }
 
-function StatusBadge({ status }: { status: Issue["status"] }) {
+function StatusBadge({ status }: { status: IssueStatus }) {
   switch (status) {
     case "not started":
       return (
@@ -325,7 +325,7 @@ function StatusBadge({ status }: { status: Issue["status"] }) {
   }
 }
 
-function getStatusLabel(status: Issue["status"]) {
+function getStatusLabel(status: IssueStatus) {
   switch (status) {
     case "not started":
       return "Not started";

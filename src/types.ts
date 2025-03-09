@@ -1,15 +1,10 @@
+export type IssueStatus = "not started" | "in progress" | "done";
+
 export type Issue = {
   id: number;
   title: string;
   description: string;
-  status: "not started" | "in progress" | "done";
+  status: IssueStatus;
   owner: string;
   createdAt: string;
-};
-
-export type MutationLogEntry = {
-  id: number;
-  clientId: string;
-  mutator: string;
-  args: string;
 };

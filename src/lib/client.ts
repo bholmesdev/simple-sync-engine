@@ -4,17 +4,12 @@ import { getMigrations, getResetMigrations } from "./migrations";
 import { useState, useEffect } from "react";
 import { mutation, query } from "../queries";
 import type { PullResponse } from "../pages/api/pull";
-import type { MutationLogEntry } from "../types";
 
-export const db = new SQLocal("database.sqlite3");
-export const optimisticDb = new SQLocal("optimistic-database.sqlite3");
+const db = new SQLocal("database.sqlite3");
+const optimisticDb = new SQLocal("optimistic-database.sqlite3");
 
 // Store refetch functions to invalidate all whenever we pull
 const queryRefetchFns = new Set<() => void>();
-
-export function run(db: SQLocal, query: SQLStatement) {
-  return db.sql(query.sql, ...query.values);
-}
 
 export async function pull() {
   const clientId = getClientId();
@@ -29,9 +24,7 @@ export async function pull() {
   }
   const { mutations, flushCount }: PullResponse = await res.json();
   for (const entry of mutations) {
-    const stmt = mutation[entry.mutator as keyof typeof mutation](
-      entry.args as any
-    );
+    const stmt = mutation[entry.mutator](entry.args);
     await run(db, stmt);
   }
   await flushMutationLog(flushCount);
@@ -40,12 +33,19 @@ export async function pull() {
   await optimisticDb.overwriteDatabaseFile(await file.arrayBuffer());
 
   for (const entry of await getMutationLog()) {
-    const stmt = mutation[entry.mutator as keyof typeof mutation](
-      entry.args as any
-    );
+    const stmt = mutation[entry.mutator](entry.args);
     await run(optimisticDb, stmt);
   }
   invalidateAll();
+}
+
+async function push(mutator: keyof typeof mutation, args: any) {
+  const clientId = getClientId();
+  await addMutationLogEntry({ clientId, mutator, args });
+  fetch(`/api/push`, {
+    method: "POST",
+    body: JSON.stringify({ clientId, mutator, args }),
+  }).then((res) => console.log("pushed mutation", mutator, res.status));
 }
 
 export async function mutate<T extends keyof typeof mutation>(
@@ -53,18 +53,13 @@ export async function mutate<T extends keyof typeof mutation>(
   args: Parameters<(typeof mutation)[T]>[0]
 ) {
   const res = await run(optimisticDb, mutation[mutator](args as any));
-  const clientId = getClientId();
-  await addMutationLogEntry({ clientId, mutator, args });
-  fetch(`/api/push`, {
-    method: "POST",
-    body: JSON.stringify({ clientId, mutator, args }),
-  }).then((res) => console.log("pushed mutation", mutator, res.status));
+  await push(mutator, args);
   return res;
 }
 
-export function useQuery(
-  name: keyof typeof query,
-  args: Parameters<(typeof query)[keyof typeof query]>[0]
+export function useQuery<T extends keyof typeof query>(
+  name: T,
+  args: Parameters<(typeof query)[T]>[0]
 ): [data: any[], refetch: () => void] {
   const [data, setData] = useState<any[]>([]);
   function refetch() {
@@ -100,6 +95,10 @@ async function reset() {
   invalidateAll();
 }
 
+function run(db: SQLocal, query: SQLStatement): Promise<any[]> {
+  return db.sql(query.sql, ...query.values);
+}
+
 export function useMigrations() {
   const [isComplete, setIsComplete] = useState(false);
   useEffect(() => {
@@ -132,20 +131,24 @@ function getClientId() {
   return clientId;
 }
 
-async function getMutationLog(): Promise<MutationLogEntry[]> {
-  const entries = (await run(
+async function getMutationLog(): Promise<
+  {
+    id: number;
+    clientId: string;
+    mutator: keyof typeof mutation;
+    args: any;
+  }[]
+> {
+  const entries = await run(
     db,
     sql`SELECT * FROM mutation_log ORDER BY id ASC`
-  )) as MutationLogEntry[];
-  return entries.map((entry) => ({
-    ...entry,
-    args: JSON.parse(entry.args),
-  }));
+  );
+  return entries.map((entry) => ({ ...entry, args: JSON.parse(entry.args) }));
 }
 
 async function addMutationLogEntry(entry: {
   clientId: string;
-  mutator: string;
+  mutator: keyof typeof mutation;
   args: any;
 }) {
   const stmt = sql`INSERT INTO mutation_log (clientId, mutator, args) VALUES (${

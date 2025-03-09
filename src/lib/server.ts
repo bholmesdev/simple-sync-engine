@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import sql, { SQLStatement } from "sql-template-strings";
-import type { MutationLogEntry } from "../types";
+import type { mutation } from "../queries";
 
 export const dbPath = process.env.DB_PATH ?? "database.sqlite3";
 
@@ -21,10 +21,17 @@ export function isLogIdValid(id: number): boolean {
   return id >= 0 && id <= latestLogId;
 }
 
-export function getMutationLog(afterId?: number): MutationLogEntry[] {
+export function getMutationLog(afterId?: number): {
+  id: number;
+  clientId: string;
+  mutator: keyof typeof mutation;
+  args: any;
+}[] {
   const entries = query(
-    sql`SELECT * FROM mutation_log WHERE id > ${afterId ?? 0}`
-  ) as MutationLogEntry[];
+    sql`SELECT id, clientId, mutator, args FROM mutation_log WHERE id > ${
+      afterId ?? 0
+    }`
+  );
   return entries.map((entry) => ({
     ...entry,
     args: JSON.parse(entry.args),
