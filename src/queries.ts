@@ -1,4 +1,5 @@
 import sql from "sql-template-strings";
+import type { Issue } from "./types";
 
 export const query = {
   getIssues(args: {}) {
@@ -30,5 +31,8 @@ export const mutation = {
     owner: string;
   }) {
     return sql`UPDATE issue SET title = ${title}, description = ${description}, owner = ${owner} WHERE id = ${id}`;
+  },
+  updateIssueStatus({ id, status }: { id: number; status: Issue["status"] }) {
+    return sql`UPDATE issue SET status = ${status} WHERE id = ${id}`;
   },
 };
