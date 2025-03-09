@@ -6,3 +6,10 @@ export type Issue = {
   owner: string;
   createdAt: string;
 };
+
+export type MutationLogEntry = {
+  id: number;
+  clientId: string;
+  mutator: string;
+  args: string;
+};

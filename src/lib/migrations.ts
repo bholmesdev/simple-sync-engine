@@ -10,9 +10,18 @@ export function getMigrations(): SQLStatement[] {
     status TEXT NOT NULL DEFAULT 'not started',
     createdAt INTEGER NOT NULL
   )`,
+    sql`CREATE TABLE IF NOT EXISTS mutation_log (
+    id INTEGER PRIMARY KEY,
+    clientId TEXT NOT NULL,
+    mutator TEXT NOT NULL,
+    args TEXT NOT NULL
+  )`,
   ];
 }
 
 export function getResetMigrations(): SQLStatement[] {
-  return [sql`DROP TABLE IF EXISTS issue`];
+  return [
+    sql`DROP TABLE IF EXISTS issue`,
+    sql`DROP TABLE IF EXISTS mutation_log`,
+  ];
 }
