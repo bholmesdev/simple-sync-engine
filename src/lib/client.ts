@@ -81,11 +81,6 @@ export function useQuery<T extends keyof typeof query>(
 }
 
 async function reset() {
-  const res = await fetch("/api/reset");
-  if (!res.ok) {
-    console.error("Failed to reset");
-    return;
-  }
   for (const migration of getResetMigrations()) {
     await run(db, migration);
     await run(optimisticDb, migration);

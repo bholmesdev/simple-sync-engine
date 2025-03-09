@@ -19,6 +19,7 @@ export const GET: APIRoute = async ({ cookies, url }) => {
   }
   const lastLogId = lastLogIdCookie?.number();
   if (lastLogId && !isLogIdValid(lastLogId)) {
+    cookies.delete("lastLogId");
     return new Response("Client is out of date - please reset", {
       status: 409,
     });
