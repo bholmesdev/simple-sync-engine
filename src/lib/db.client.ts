@@ -3,20 +3,20 @@ import { SQLocal } from "sqlocal";
 import { getMigrations, getResetMigrations } from "./migrations";
 import { useState, useEffect } from "react";
 import { mutation, query } from "../queries";
+import {
+  addMutationLogEntry,
+  flushMutationLog,
+  getMutationLog,
+} from "./log.client";
 
-const referenceDb = new SQLocal("reference-database.sqlite3");
-const db = new SQLocal("database.sqlite3");
+export const referenceDb = new SQLocal("reference-database.sqlite3");
+export const db = new SQLocal("database.sqlite3");
 const clientId = crypto.randomUUID();
-
-const commandLog: Array<{
-  mutator: keyof typeof mutation;
-  args: Parameters<(typeof mutation)[keyof typeof mutation]>[0];
-}> = [];
 
 // Store refetch functions to invalidate all whenever we pull
 const queryRefetchFns = new Set<() => void>();
 
-function run(query: SQLStatement, selectedDb: SQLocal = db) {
+export function run(query: SQLStatement, selectedDb: SQLocal = db) {
   return selectedDb.sql(query.sql, ...query.values);
 }
 
@@ -33,17 +33,18 @@ export async function pull() {
     );
     await run(stmt, referenceDb);
   }
+  await flushMutationLog(flushCount);
+
   const file = await referenceDb.getDatabaseFile();
   await db.overwriteDatabaseFile(await file.arrayBuffer());
-  commandLog.splice(0, flushCount);
-  for (const command of commandLog) {
+
+  for (const command of await getMutationLog()) {
     const stmt = mutation[command.mutator as keyof typeof mutation](
       command.args as any
     );
     await run(stmt, db);
   }
   invalidateAll();
-  console.log("pulled");
 }
 
 export async function mutate<T extends keyof typeof mutation>(
@@ -51,7 +52,7 @@ export async function mutate<T extends keyof typeof mutation>(
   args: Parameters<(typeof mutation)[T]>[0]
 ) {
   const res = await run(mutation[mutator](args as any));
-  commandLog.push({ mutator, args });
+  await addMutationLogEntry({ clientId, mutator, args });
   fetch(`/api/push`, {
     method: "POST",
     body: JSON.stringify({ clientId, mutator, args }),
