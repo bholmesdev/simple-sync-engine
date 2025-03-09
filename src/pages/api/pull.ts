@@ -1,9 +1,9 @@
 import type { APIRoute } from "astro";
-import { getMutationLog } from "../../lib/log.server";
+import { getMutationLog, isLogIdValid } from "../../lib/log.server";
 
 export type PullResponse = {
   flushCount: number;
-  commands: Array<{
+  mutations: Array<{
     clientId: string;
     mutator: string;
     args: any;
@@ -17,17 +17,25 @@ export const GET: APIRoute = async ({ cookies, url }) => {
     return new Response("Client ID is required", { status: 400 });
   }
   const lastLogId = lastLogIdCookie?.number();
-  const commands = getMutationLog(lastLogId);
+  if (lastLogId && !isLogIdValid(lastLogId)) {
+    return new Response("Client is out of date - please reset", {
+      status: 409,
+    });
+  }
+  const mutations = getMutationLog(lastLogId);
 
-  const flushCount = commands.filter(
+  const flushCount = mutations.filter(
     (command) => command.clientId === clientId
   ).length;
-  const latestCommand = commands.at(-1);
+  const latestCommand = mutations.at(-1);
   if (latestCommand) {
     cookies.set("lastLogId", latestCommand.id.toString());
   }
 
-  return new Response(JSON.stringify({ commands, flushCount }), {
-    status: 200,
-  });
+  return new Response(
+    JSON.stringify({ mutations, flushCount } satisfies PullResponse),
+    {
+      status: 200,
+    }
+  );
 };

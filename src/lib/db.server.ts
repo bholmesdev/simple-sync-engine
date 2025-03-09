@@ -7,7 +7,7 @@ const db = new Database(dbPath);
 
 export { sql };
 
-export function query(query: SQLStatement) {
+export function query(query: SQLStatement): any[] {
   return db.prepare(query.sql).all(query.values);
 }
 

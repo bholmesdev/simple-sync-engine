@@ -24,14 +24,18 @@ export function run(db: SQLocal, query: SQLStatement) {
 
 export async function pull() {
   const res = await fetch(`/api/pull?clientId=${clientId}`);
+  if (res.status === 409) {
+    await reset();
+    return;
+  }
   if (!res.ok) {
     console.error("Failed to pull");
     return;
   }
-  const { commands, flushCount } = await res.json();
-  for (const command of commands) {
-    const stmt = mutation[command.mutator as keyof typeof mutation](
-      command.args
+  const { mutations, flushCount }: PullResponse = await res.json();
+  for (const entry of mutations) {
+    const stmt = mutation[entry.mutator as keyof typeof mutation](
+      entry.args as any
     );
     await run(db, stmt);
   }
@@ -40,9 +44,9 @@ export async function pull() {
   const file = await db.getDatabaseFile();
   await optimisticDb.overwriteDatabaseFile(await file.arrayBuffer());
 
-  for (const command of await getMutationLog()) {
-    const stmt = mutation[command.mutator as keyof typeof mutation](
-      command.args as any
+  for (const entry of await getMutationLog()) {
+    const stmt = mutation[entry.mutator as keyof typeof mutation](
+      entry.args as any
     );
     await run(optimisticDb, stmt);
   }
@@ -95,7 +99,8 @@ export async function reset() {
     await run(db, migration);
     await run(optimisticDb, migration);
   }
-  window.location.reload();
+  await runMigrations();
+  invalidateAll();
 }
 
 export function useMigrations() {

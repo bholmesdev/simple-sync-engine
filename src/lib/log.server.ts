@@ -2,6 +2,13 @@ import sql from "sql-template-strings";
 import type { MutationLogEntry } from "../types";
 import { query, run } from "./db.server";
 
+export function isLogIdValid(id: number): boolean {
+  const latestLogId: number =
+    query(sql`SELECT MAX(id) as latestLogId FROM mutation_log`)[0]
+      ?.latestLogId ?? 0;
+  return id >= 0 && id <= latestLogId;
+}
+
 export function getMutationLog(afterId?: number): MutationLogEntry[] {
   const entries = query(
     sql`SELECT * FROM mutation_log WHERE id > ${afterId ?? 0}`
