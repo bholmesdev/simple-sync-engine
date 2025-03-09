@@ -28,7 +28,7 @@ function Home() {
         <h1 className="text-lg">Issues</h1>
         <button
           type="button"
-          className="ml-auto px-3 py-1 bg-red-500 hover:bg-red-400 dark:bg-red-800 hover:dark:bg-red-700 transition-colors rounded"
+          className="ml-auto px-3 py-1  hover:bg-red-400 hover:dark:bg-red-700 transition-colors rounded"
           onClick={() => {
             reset();
           }}
