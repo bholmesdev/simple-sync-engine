@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { RiAddFill, RiCheckFill, RiCloseFill } from "@remixicon/react";
 import type { Issue } from "./types";
-import { pull, useMigrations, useQuery, mutate, reset } from "./lib/db.client";
+import { pull, useMigrations, useQuery, mutate } from "./lib/db.client";
 
 export function App() {
   const isMigrationsLoaded = useMigrations();
@@ -27,15 +27,7 @@ function Home() {
       <nav className="flex gap-4 items-center mb-4 px-5">
         <h1 className="text-lg">Issues</h1>
         <button
-          type="button"
-          className="ml-auto px-3 py-1  hover:bg-red-500 hover:text-white hover:dark:bg-red-700 transition-colors rounded"
-          onClick={() => {
-            reset();
-          }}
-        >
-          Reset
-        </button>
-        <button
+          className="ml-auto"
           onClick={() => {
             issueDialog.open();
             setSelectedIndex(issues.length);

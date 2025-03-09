@@ -89,7 +89,7 @@ export function useQuery(
   return [data, refetch];
 }
 
-export async function reset() {
+async function reset() {
   const res = await fetch("/api/reset");
   if (!res.ok) {
     console.error("Failed to reset");
