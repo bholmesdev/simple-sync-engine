@@ -13,8 +13,6 @@ import type { PullResponse } from "../pages/api/pull";
 export const db = new SQLocal("database.sqlite3");
 export const optimisticDb = new SQLocal("optimistic-database.sqlite3");
 
-const clientId = createClientId();
-
 // Store refetch functions to invalidate all whenever we pull
 const queryRefetchFns = new Set<() => void>();
 
@@ -23,6 +21,7 @@ export function run(db: SQLocal, query: SQLStatement) {
 }
 
 export async function pull() {
+  const clientId = getClientId();
   const res = await fetch(`/api/pull?clientId=${clientId}`);
   if (res.status === 409) {
     await reset();
@@ -58,6 +57,7 @@ export async function mutate<T extends keyof typeof mutation>(
   args: Parameters<(typeof mutation)[T]>[0]
 ) {
   const res = await run(optimisticDb, mutation[mutator](args as any));
+  const clientId = getClientId();
   await addMutationLogEntry({ clientId, mutator, args });
   fetch(`/api/push`, {
     method: "POST",
@@ -100,6 +100,7 @@ export async function reset() {
     await run(optimisticDb, migration);
   }
   await runMigrations();
+  localStorage.removeItem("clientId");
   invalidateAll();
 }
 
@@ -126,7 +127,7 @@ function invalidateAll() {
 
 // Unique ID used to check whether optimistic updates
 // were applied to the server.
-function createClientId() {
+function getClientId() {
   let clientId = localStorage.getItem("clientId");
   if (!clientId) {
     clientId = crypto.randomUUID();
