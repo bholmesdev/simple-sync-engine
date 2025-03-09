@@ -1,11 +1,11 @@
 import sql from "sql-template-strings";
 import type { MutationLogEntry } from "../types";
-import { referenceDb, run } from "./db.client";
+import { db, run } from "./db.client";
 
 export async function getMutationLog(): Promise<MutationLogEntry[]> {
   const entries = (await run(
-    sql`SELECT * FROM mutation_log ORDER BY id ASC`,
-    referenceDb
+    db,
+    sql`SELECT * FROM mutation_log ORDER BY id ASC`
   )) as MutationLogEntry[];
   return entries.map((entry) => ({
     ...entry,
@@ -21,12 +21,12 @@ export async function addMutationLogEntry(entry: {
   const stmt = sql`INSERT INTO mutation_log (clientId, mutator, args) VALUES (${
     entry.clientId
   }, ${entry.mutator}, ${JSON.stringify(entry.args)})`;
-  await run(stmt, referenceDb);
+  await run(db, stmt);
 }
 
 export async function flushMutationLog(count: number) {
   await run(
-    sql`DELETE FROM mutation_log WHERE id IN (SELECT id FROM mutation_log ORDER BY id ASC LIMIT ${count})`,
-    referenceDb
+    db,
+    sql`DELETE FROM mutation_log WHERE id IN (SELECT id FROM mutation_log ORDER BY id ASC LIMIT ${count})`
   );
 }

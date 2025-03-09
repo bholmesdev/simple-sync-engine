@@ -9,15 +9,15 @@ import {
   getMutationLog,
 } from "./log.client";
 
-export const referenceDb = new SQLocal("reference-database.sqlite3");
 export const db = new SQLocal("database.sqlite3");
+export const optimisticDb = new SQLocal("optimistic-database.sqlite3");
 const clientId = crypto.randomUUID();
 
 // Store refetch functions to invalidate all whenever we pull
 const queryRefetchFns = new Set<() => void>();
 
-export function run(query: SQLStatement, selectedDb: SQLocal = db) {
-  return selectedDb.sql(query.sql, ...query.values);
+export function run(db: SQLocal, query: SQLStatement) {
+  return db.sql(query.sql, ...query.values);
 }
 
 export async function pull() {
@@ -31,18 +31,18 @@ export async function pull() {
     const stmt = mutation[command.mutator as keyof typeof mutation](
       command.args
     );
-    await run(stmt, referenceDb);
+    await run(db, stmt);
   }
   await flushMutationLog(flushCount);
 
-  const file = await referenceDb.getDatabaseFile();
-  await db.overwriteDatabaseFile(await file.arrayBuffer());
+  const file = await db.getDatabaseFile();
+  await optimisticDb.overwriteDatabaseFile(await file.arrayBuffer());
 
   for (const command of await getMutationLog()) {
     const stmt = mutation[command.mutator as keyof typeof mutation](
       command.args as any
     );
-    await run(stmt, db);
+    await run(optimisticDb, stmt);
   }
   invalidateAll();
 }
@@ -51,7 +51,7 @@ export async function mutate<T extends keyof typeof mutation>(
   mutator: T,
   args: Parameters<(typeof mutation)[T]>[0]
 ) {
-  const res = await run(mutation[mutator](args as any));
+  const res = await run(optimisticDb, mutation[mutator](args as any));
   await addMutationLogEntry({ clientId, mutator, args });
   fetch(`/api/push`, {
     method: "POST",
@@ -66,7 +66,7 @@ export function useQuery(
 ): [data: any[], refetch: () => void] {
   const [data, setData] = useState<any[]>([]);
   function refetch() {
-    run(query[name](args)).then(setData);
+    run(optimisticDb, query[name](args)).then(setData);
   }
   useEffect(() => {
     refetch();
@@ -90,8 +90,8 @@ export async function reset() {
     return;
   }
   for (const migration of getResetMigrations()) {
-    await run(migration, referenceDb);
-    await run(migration, db);
+    await run(db, migration);
+    await run(optimisticDb, migration);
   }
   window.location.reload();
 }
@@ -109,8 +109,8 @@ export function useMigrations() {
 export async function runMigrations() {
   const migrations = getMigrations();
   for (const migration of migrations) {
-    await run(migration, referenceDb);
-    await run(migration, db);
+    await run(db, migration);
+    await run(optimisticDb, migration);
   }
 }
 
