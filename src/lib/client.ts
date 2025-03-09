@@ -1,6 +1,6 @@
 import sql, { type SQLStatement } from "sql-template-strings";
 import { SQLocal } from "sqlocal";
-import { getMigrations, getResetMigrations } from "./migrations";
+import { getMigrations, getResetMigrations } from "../migrations";
 import { useState, useEffect } from "react";
 import { mutation, query } from "../queries";
 import type { PullResponse } from "../pages/api/pull";
