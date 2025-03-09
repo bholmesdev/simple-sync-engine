@@ -7,10 +7,8 @@ export function getMigrations(): SQLStatement[] {
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     owner TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'not started',
-
-    createdAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
-    updatedAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+    status TEXT NOT NULL,
+    createdAt INTEGER NOT NULL
   )`,
   ];
 }

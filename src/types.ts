@@ -4,4 +4,5 @@ export type Issue = {
   description: string;
   status: "not started" | "in progress" | "done";
   owner: string;
+  createdAt: string;
 };

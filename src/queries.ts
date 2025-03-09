@@ -12,12 +12,14 @@ export const mutation = {
     title,
     description,
     owner,
+    createdAt,
   }: {
     title: string;
     description: string;
     owner: string;
+    createdAt: number;
   }) {
-    return sql`INSERT INTO issue (title, description, owner) VALUES (${title}, ${description}, ${owner})`;
+    return sql`INSERT INTO issue (title, description, owner, createdAt) VALUES (${title}, ${description}, ${owner}, ${createdAt})`;
   },
   updateIssue({
     id,

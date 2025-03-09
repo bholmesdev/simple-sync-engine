@@ -131,6 +131,12 @@ function Issue({
         }}
       >
         <h2 className="font-medium">{issue.title}</h2>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          {new Date(issue.createdAt).toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+          })}
+        </p>
       </button>
     </li>
   );
@@ -165,6 +171,7 @@ function IssueDialog({
         title,
         description,
         owner: "Anonymous Buffalo",
+        createdAt: Date.now(),
       });
     }
     refetchIssues();
