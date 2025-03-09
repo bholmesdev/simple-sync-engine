@@ -1,7 +1,10 @@
 {
-    "mutator": "createTask",
+    "mutator": "createIssue",
     "clientId": "test-runner",
     "args": {
-        "title": "test called from script"
+        "title": "Example task",
+        "description": "This is an example task",
+        "owner": "Anonymous Buffalo",
+        "createdAt": 1715222400000
     }
 }
