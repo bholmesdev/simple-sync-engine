@@ -38,7 +38,7 @@ export async function pull() {
   commandLog.splice(0, flushCount);
   for (const command of commandLog) {
     const stmt = mutation[command.mutator as keyof typeof mutation](
-      command.args
+      command.args as any
     );
     await run(stmt, db);
   }
@@ -46,11 +46,11 @@ export async function pull() {
   console.log("pulled");
 }
 
-export async function mutate(
-  mutator: keyof typeof mutation,
-  args: Parameters<(typeof mutation)[keyof typeof mutation]>[0]
+export async function mutate<T extends keyof typeof mutation>(
+  mutator: T,
+  args: Parameters<(typeof mutation)[T]>[0]
 ) {
-  const res = await run(mutation[mutator](args));
+  const res = await run(mutation[mutator](args as any));
   commandLog.push({ mutator, args });
   fetch(`/api/push`, {
     method: "POST",
@@ -99,7 +99,6 @@ export function useMigrations() {
   const [isComplete, setIsComplete] = useState(false);
   useEffect(() => {
     runMigrations().then(() => {
-      console.log("migrations complete");
       setIsComplete(true);
     });
   }, []);
