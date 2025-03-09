@@ -11,6 +11,9 @@ import {
 
 export const db = new SQLocal("database.sqlite3");
 export const optimisticDb = new SQLocal("optimistic-database.sqlite3");
+
+// Unique ID used to check whether optimistic updates
+// were applied to the server.
 const clientId = crypto.randomUUID();
 
 // Store refetch functions to invalidate all whenever we pull
@@ -106,14 +109,13 @@ export function useMigrations() {
   return isComplete;
 }
 
-export async function runMigrations() {
-  const migrations = getMigrations();
-  for (const migration of migrations) {
+async function runMigrations() {
+  for (const migration of getMigrations()) {
     await run(db, migration);
     await run(optimisticDb, migration);
   }
 }
 
-export function invalidateAll() {
+function invalidateAll() {
   queryRefetchFns.forEach((refetch) => refetch());
 }
