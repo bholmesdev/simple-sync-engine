@@ -23,12 +23,12 @@ function Home() {
   }, []);
 
   return (
-    <div className="p-4">
-      <nav className="flex gap-4 items-center mb-4">
+    <div className="py-4">
+      <nav className="flex gap-4 items-center mb-4 px-5">
         <h1 className="text-lg">Issues</h1>
         <button
           type="button"
-          className="ml-auto px-3 py-1  hover:bg-red-400 hover:dark:bg-red-700 transition-colors rounded"
+          className="ml-auto px-3 py-1  hover:bg-red-500 hover:text-white hover:dark:bg-red-700 transition-colors rounded"
           onClick={() => {
             reset();
           }}
@@ -104,7 +104,7 @@ function Issue({
   }, [isSelected]);
 
   return (
-    <li className="flex items-center gap-4 w-full outline-none focus-within:dark:bg-zinc-900 focus-within:bg-zinc-100 px-3">
+    <li className="flex items-center gap-4 w-full outline-none focus-within:dark:bg-zinc-900 focus-within:bg-zinc-100 px-3 pr-6">
       <StatusToggle
         issueId={issue.id}
         status={issue.status}
@@ -113,7 +113,7 @@ function Issue({
       />
       <button
         ref={ref}
-        className="flex-1 flex items-center gap-2 outline-none py-3"
+        className="flex-1 flex items-center gap-2 outline-none py-3 justify-between"
         type="button"
         onClick={onClick}
         onFocus={onFocus}
@@ -226,7 +226,7 @@ function IssueDialog({
           placeholder="Add description..."
           defaultValue={issue?.description}
         />
-        <div className="flex justify-between gap-2 text-sm">
+        <div className="flex items-center gap-2 text-sm">
           {issue && (
             <StatusToggle
               issueId={issue.id}
@@ -234,12 +234,21 @@ function IssueDialog({
               refetchIssues={refetchIssues}
             />
           )}
-          <button
-            type="submit"
-            className="ml-auto px-3 py-1 bg-indigo-500 hover:bg-indigo-400 dark:bg-indigo-800 hover:dark:bg-indigo-700 transition-colors rounded"
+          <div
+            className="flex items-center gap-2 ml-auto"
+            aria-labelledby="save-button save-shortcut"
           >
-            {issue ? "Save" : "Create"}
-          </button>
+            <kbd className="text-xs  px-2 py-px rounded" id="save-shortcut">
+              ⌘ + Enter
+            </kbd>
+            <button
+              id="save-button"
+              type="submit"
+              className="px-3 py-1 bg-indigo-500 hover:bg-indigo-400 dark:bg-indigo-800 hover:dark:bg-indigo-700 transition-colors rounded flex items-center gap-2 text-white"
+            >
+              {issue ? "Save" : "Create"}
+            </button>
+          </div>
         </div>
       </form>
     </dialog>
