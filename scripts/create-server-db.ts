@@ -1,4 +1,4 @@
-import { run } from "../src/lib/db.server";
+import { run } from "../src/lib/server";
 import { getMigrations, getResetMigrations } from "../src/lib/migrations";
 
 if (process.env.DB_RESET) {

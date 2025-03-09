@@ -1,8 +1,7 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { mutation } from "../../queries";
-import { run } from "../../lib/db.server";
-import { addMutationLogEntry } from "../../lib/log.server";
+import { run, addMutationLogEntry } from "../../lib/server";
 
 const payloadSchema = z.object({
   clientId: z.string(),

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { RiAddFill, RiCheckFill, RiCloseFill } from "@remixicon/react";
 import type { Issue } from "./types";
-import { pull, useMigrations, useQuery, mutate } from "./lib/db.client";
+import { pull, useMigrations, useQuery, mutate } from "./lib/client";
 
 export function App() {
   const isMigrationsLoaded = useMigrations();

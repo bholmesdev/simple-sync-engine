@@ -3,12 +3,8 @@ import { SQLocal } from "sqlocal";
 import { getMigrations, getResetMigrations } from "./migrations";
 import { useState, useEffect } from "react";
 import { mutation, query } from "../queries";
-import {
-  addMutationLogEntry,
-  flushMutationLog,
-  getMutationLog,
-} from "./log.client";
 import type { PullResponse } from "../pages/api/pull";
+import type { MutationLogEntry } from "../types";
 
 export const db = new SQLocal("database.sqlite3");
 export const optimisticDb = new SQLocal("optimistic-database.sqlite3");
@@ -134,4 +130,33 @@ function getClientId() {
     localStorage.setItem("clientId", clientId);
   }
   return clientId;
+}
+
+async function getMutationLog(): Promise<MutationLogEntry[]> {
+  const entries = (await run(
+    db,
+    sql`SELECT * FROM mutation_log ORDER BY id ASC`
+  )) as MutationLogEntry[];
+  return entries.map((entry) => ({
+    ...entry,
+    args: JSON.parse(entry.args),
+  }));
+}
+
+async function addMutationLogEntry(entry: {
+  clientId: string;
+  mutator: string;
+  args: any;
+}) {
+  const stmt = sql`INSERT INTO mutation_log (clientId, mutator, args) VALUES (${
+    entry.clientId
+  }, ${entry.mutator}, ${JSON.stringify(entry.args)})`;
+  await run(db, stmt);
+}
+
+async function flushMutationLog(count: number) {
+  await run(
+    db,
+    sql`DELETE FROM mutation_log WHERE id IN (SELECT id FROM mutation_log ORDER BY id ASC LIMIT ${count})`
+  );
 }

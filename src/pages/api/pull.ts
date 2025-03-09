@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getMutationLog, isLogIdValid } from "../../lib/log.server";
+import { getMutationLog, isLogIdValid } from "../../lib/server";
 
 export type PullResponse = {
   flushCount: number;
