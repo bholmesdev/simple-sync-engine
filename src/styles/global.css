@@ -1,9 +1,1 @@
 @import "tailwindcss";
-
-@theme {
-    --text-base: 14px;
-}
-
-body {
-    font-size: var(--text-base);
-}

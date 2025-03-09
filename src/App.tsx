@@ -96,7 +96,7 @@ function IssueRow({
   }, [isSelected]);
 
   return (
-    <li className="flex items-center gap-4 w-full outline-none focus-within:dark:bg-zinc-900 focus-within:bg-zinc-100 px-3 pr-6">
+    <li className="flex items-center text-sm gap-4 w-full outline-none focus-within:dark:bg-zinc-900 focus-within:bg-zinc-100 px-3 pr-6">
       <StatusToggle
         issueId={issue.id}
         status={issue.status}
@@ -123,7 +123,7 @@ function IssueRow({
         }}
       >
         <h2 className="font-medium">{issue.title}</h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-zinc-500 dark:text-zinc-400">
           {new Date(issue.createdAt).toLocaleDateString(undefined, {
             month: "short",
             day: "numeric",
@@ -213,7 +213,7 @@ function IssueDialog({
         </div>
         <textarea
           ref={descriptionRef}
-          className="px-2 text-sm h-[20rem] resize-none outline-none"
+          className="px-2 h-[20rem] max-h-[40dvh] resize-none outline-none"
           name="description"
           placeholder="Add description..."
           defaultValue={issue?.description}
