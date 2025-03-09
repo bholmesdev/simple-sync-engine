@@ -213,7 +213,7 @@ function IssueDialog({
         </div>
         <textarea
           ref={descriptionRef}
-          className="px-2 sm:h-[20rem] h-[14rem] resize-none outline-none"
+          className="px-2 sm:h-[20rem] h-[10rem] resize-none outline-none"
           name="description"
           placeholder="Add description..."
           defaultValue={issue?.description}
