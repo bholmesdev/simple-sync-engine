@@ -21,7 +21,7 @@ pnpm dev
 
 These are the primary files that drive the sync engine:
 
-```text
+```sh
 /
 ├── src/
 │   ├── lib/ # Utilities to query the server and client databases
