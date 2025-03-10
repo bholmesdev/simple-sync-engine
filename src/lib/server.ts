@@ -39,13 +39,13 @@ export function getMutationLog(afterId?: number): {
 }
 
 export function addMutationLogEntry(entry: {
-  clientId: string;
+  clientId?: string;
   mutator: string;
   args: any;
 }) {
   return run(
     sql`INSERT INTO mutation_log (clientId, mutator, args) VALUES (${
-      entry.clientId
+      entry.clientId ?? ""
     }, ${entry.mutator}, ${JSON.stringify(entry.args)})`
   );
 }

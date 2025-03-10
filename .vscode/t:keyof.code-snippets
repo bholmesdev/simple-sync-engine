@@ -1,0 +1,10 @@
+{
+  "t:keyof": {
+    "scope": "",
+    "prefix": "t:keyofmutation",
+    "body": [
+      "mutator as keyof typeof mutation"
+    ],
+    "description": ""
+  }
+}

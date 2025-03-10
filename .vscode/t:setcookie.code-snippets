@@ -1,0 +1,10 @@
+{
+  "t:setcookie": {
+    "scope": "",
+    "prefix": "t:setcookie",
+    "body": [
+      "    cookies.set(\"lastLogId\", latestCommand.id.toString());"
+    ],
+    "description": ""
+  }
+}

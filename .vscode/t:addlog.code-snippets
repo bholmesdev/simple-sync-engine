@@ -1,0 +1,10 @@
+{
+  "t:addlog": {
+    "scope": "",
+    "prefix": "t:addlog",
+    "body": [
+      "  await addMutationLogEntry({ clientId, mutator, args });"
+    ],
+    "description": ""
+  }
+}

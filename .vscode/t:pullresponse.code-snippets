@@ -1,0 +1,10 @@
+{
+  "t:pullresponse": {
+    "scope": "",
+    "prefix": "t:pullresponse",
+    "body": [
+      "JSON.stringify({ mutations } satisfies PullResponse)"
+    ],
+    "description": ""
+  }
+}

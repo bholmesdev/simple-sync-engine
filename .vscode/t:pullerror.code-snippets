@@ -1,0 +1,10 @@
+{
+  "t:pullerror": {
+    "scope": "",
+    "prefix": "t:pullerror",
+    "body": [
+      "  if (!res.ok) {\n    console.error(\"Failed to pull\");\n    return;\n  }"
+    ],
+    "description": ""
+  }
+}

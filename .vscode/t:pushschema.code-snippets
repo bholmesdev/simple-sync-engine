@@ -1,0 +1,10 @@
+{
+  "t:pushschema": {
+    "scope": "",
+    "prefix": "t:pushschema",
+    "body": [
+      "const payloadSchema = z.object({\n  mutator: z.string().refine((mutator) => mutator in mutation, {\n    message: \"Invalid mutator\",\n  }),\n  args: z.any(),\n});"
+    ],
+    "description": ""
+  }
+}

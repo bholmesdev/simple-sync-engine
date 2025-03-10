@@ -1,0 +1,10 @@
+{
+  "t:dbfile": {
+    "scope": "",
+    "prefix": "t:overwritedbfile",
+    "body": [
+      "  const file = await db.getDatabaseFile();\n  await db.overwriteDatabaseFile(await file.arrayBuffer());"
+    ],
+    "description": ""
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "t:pushbody": {
+    "scope": "",
+    "prefix": "t:pushbody",
+    "body": [
+      "    body: JSON.stringify({ mutator, args }),"
+    ],
+    "description": ""
+  }
+}

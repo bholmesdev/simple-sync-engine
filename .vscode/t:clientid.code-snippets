@@ -1,0 +1,10 @@
+{
+  "t:clientid": {
+    "scope": "",
+    "prefix": "t:clientid",
+    "body": [
+      "  const clientId = url.searchParams.get(\"clientId\");\n  if (!clientId) {\n    return new Response(\"Client ID is required\", { status: 400 });\n  }"
+    ],
+    "description": ""
+  }
+}

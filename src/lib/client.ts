@@ -5,55 +5,18 @@ import { useState, useEffect } from "react";
 import { mutation, query } from "../queries";
 import type { PullResponse } from "../pages/api/pull";
 
-export const db = new SQLocal("database.sqlite3");
-export const optimisticDb = new SQLocal("optimistic-database.sqlite3");
+export const db = new SQLocal("optimistic-database.sqlite3");
 
 // Store refetch functions to invalidate all whenever we pull
 const queryRefetchFns = new Set<() => void>();
 
-export async function pull() {
-  const clientId = getClientId();
-  const res = await fetch(`/api/pull?clientId=${clientId}`);
-  if (res.status === 409) {
-    await reset();
-    return;
-  }
-  if (!res.ok) {
-    console.error("Failed to pull");
-    return;
-  }
-  const { mutations, flushCount }: PullResponse = await res.json();
-  for (const entry of mutations) {
-    const stmt = mutation[entry.mutator](entry.args);
-    await run(db, stmt);
-  }
-  await flushMutationLog(flushCount);
-
-  const file = await db.getDatabaseFile();
-  await optimisticDb.overwriteDatabaseFile(await file.arrayBuffer());
-
-  for (const entry of await getMutationLog()) {
-    const stmt = mutation[entry.mutator](entry.args);
-    await run(optimisticDb, stmt);
-  }
-  invalidateAll();
-}
-
-async function push(mutator: keyof typeof mutation, args: any) {
-  const clientId = getClientId();
-  await addMutationLogEntry({ clientId, mutator, args });
-  fetch(`/api/push`, {
-    method: "POST",
-    body: JSON.stringify({ clientId, mutator, args }),
-  }).then((res) => console.log("pushed mutation", mutator, res.status));
-}
+export async function pull() {}
 
 export async function mutate<T extends keyof typeof mutation>(
   mutator: T,
   args: Parameters<(typeof mutation)[T]>[0]
 ) {
-  const res = await run(optimisticDb, mutation[mutator](args as any));
-  await push(mutator, args);
+  const res = await run(db, mutation[mutator](args as any));
   return res;
 }
 
@@ -63,7 +26,7 @@ export function useQuery<T extends keyof typeof query>(
 ): [data: any[], refetch: () => void] {
   const [data, setData] = useState<any[]>([]);
   function refetch() {
-    run(optimisticDb, query[name](args)).then(setData);
+    run(db, query[name](args)).then(setData);
   }
   useEffect(() => {
     refetch();
@@ -83,7 +46,7 @@ export function useQuery<T extends keyof typeof query>(
 async function reset() {
   for (const migration of getResetMigrations()) {
     await run(db, migration);
-    await run(optimisticDb, migration);
+    await run(db, migration);
   }
   await runMigrations();
   localStorage.removeItem("clientId");
@@ -107,7 +70,7 @@ export function useMigrations() {
 export async function runMigrations() {
   for (const migration of getMigrations()) {
     await run(db, migration);
-    await run(optimisticDb, migration);
+    await run(db, migration);
   }
 }
 

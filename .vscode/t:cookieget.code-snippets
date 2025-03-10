@@ -1,0 +1,10 @@
+{
+  "t:cookieget": {
+    "scope": "",
+    "prefix": "t:cookieget",
+    "body": [
+      "  const lastLogIdCookie = cookies.get(\"lastLogId\");"
+    ],
+    "description": ""
+  }
+}
