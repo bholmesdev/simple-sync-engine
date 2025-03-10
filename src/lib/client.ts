@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import { mutation, query } from "../queries";
 import type { PullResponse } from "../pages/api/pull";
 
-const db = new SQLocal("database.sqlite3");
-const optimisticDb = new SQLocal("optimistic-database.sqlite3");
+export const db = new SQLocal("database.sqlite3");
+export const optimisticDb = new SQLocal("optimistic-database.sqlite3");
 
 // Store refetch functions to invalidate all whenever we pull
 const queryRefetchFns = new Set<() => void>();
@@ -104,7 +104,7 @@ export function useMigrations() {
   return isComplete;
 }
 
-async function runMigrations() {
+export async function runMigrations() {
   for (const migration of getMigrations()) {
     await run(db, migration);
     await run(optimisticDb, migration);

@@ -1,0 +1,42 @@
+---
+
+---
+
+<h1>Playground</h1>
+<p>
+  Open your browser's developer console to interact with the database using the <code
+    >window.db</code
+  > object.
+</p>
+<p>You can write queries using the <code>db.sql`...`</code> utility.</p>
+<h2>Examples</h2>
+<dl>
+  <dt>Get the database file</dt>
+  <dd>
+    <code>db.getDatabaseFile()</code>
+  </dd>
+  <dt>Get all issues</dt>
+  <dd>
+    <code>await db.sql`SELECT * FROM issue`</code>
+  </dd>
+  <dt>Insert a new issue</dt>
+  <dd>
+    <code
+      >await db.sql`INSERT INTO issue (title, description, owner, createdAt)
+      VALUES ('New task', 'This is a new task', 'ben', 1715222400000)`</code
+    >
+  </dd>
+  <dt>Delete all issues</dt>
+  <dd>
+    <code>await db.sql`DELETE FROM issue`</code>
+  </dd>
+</dl>
+
+<script>
+  import { db, runMigrations } from "../lib/client";
+
+  await runMigrations();
+
+  // @ts-ignore
+  window.db = db;
+</script>
