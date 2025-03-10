@@ -2,11 +2,11 @@
 
 This is a simple, not-so-production-ready implementation of a sync engine. We use SQLite on the client and server, and use a simplified version of [Replicache's "push" and "pull" model](https://doc.replicache.dev/concepts/how-it-works#sync-details) to sync changes.
 
-## Purpose
+## Purpose 🎯
 
 This project is a teaching tool, _not_ the bedrock of your next side hustle. I hope it becomes your springboard to implement a robust sync engine of your own!
 
-## Run the project
+## Run the project 🏃‍♂️
 
 Ensure you have [Node.js v20 or later](https://nodejs.org) installed on your machine, along with [pnpm](https://pnpm.io) for package management.
 
@@ -17,7 +17,7 @@ pnpm install
 pnpm dev
 ```
 
-## Project Structure
+## Project Structure 📂
 
 These are the primary files that drive the sync engine:
 
@@ -34,7 +34,7 @@ These are the primary files that drive the sync engine:
 │   └── queries.ts # Queries to read and write data on the server and client
 ```
 
-## How it works
+## How it works 🔄
 
 This project uses a simplified version of [Replicache's "push" and "pull" model](https://doc.replicache.dev/concepts/how-it-works#sync-details) to sync changes.
 
@@ -70,7 +70,7 @@ When the client receives a "pull" response, it will:
 
 [See `lib/client.ts` for the full implementation.](https://github.com/bholmesdev/simple-sync-engine/blob/main/src/lib/client.ts)
 
-## Assumptions
+## Assumptions ‼️
 
 To make this project simple, we made _a lot_ of assumptions. You'll definitely need to address these before using this in production!
 
@@ -80,7 +80,7 @@ To make this project simple, we made _a lot_ of assumptions. You'll definitely n
 
 - **Breaking database migrations will cause data loss.** We don't handle database migrations in this project, and suggest using the `DB_RESET` environment variable to force reset your database. To handle database changes properly, we suggest using the expand and contract model with a "versioning" system for your database schema. [Zero](https://zero.rocicorp.dev/docs/migrations) provides a robust implementation of this.
 
-## Deploy to production
+## Deploy to production 🚀
 
 This project can be deployed as a standalone server. We use [Astro with the Node.js adapter](https://docs.astro.build/en/deploy/node/), though you can use Astro's adapter system to deploy to other runtimes like [Deno](https://docs.astro.build/en/guides/deploy/deno/) or [Bun](https://docs.astro.build/en/recipes/bun/).
 
