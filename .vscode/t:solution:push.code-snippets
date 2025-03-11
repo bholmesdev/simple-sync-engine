@@ -1,0 +1,10 @@
+{
+  "t:solution:push": {
+    "scope": "",
+    "prefix": "t:solution:push",
+    "body": [
+      "import type { APIRoute } from \"astro\";\nimport { z } from \"zod\";\nimport { mutation } from \"../../queries\";\nimport { run, addMutationLogEntry } from \"../../lib/server\";\n\nconst payloadSchema = z.object({\n  clientId: z.string(),\n  mutator: z.string().refine((mutator) => mutator in mutation, {\n    message: \"Invalid mutator\",\n  }),\n  args: z.any(),\n});\n\nexport const POST: APIRoute = async ({ request }) => {\n  const body = await request.json();\n  const payload = payloadSchema.safeParse(body);\n  if (!payload.success) {\n    return new Response(`Invalid payload: \\${payload.error}`, {\n      status: 400,\n    });\n  }\n\n  const { clientId, mutator, args } = payload.data;\n  const mutatorFn = mutation[mutator as keyof typeof mutation];\n\n  addMutationLogEntry({ clientId, mutator, args });\n  run(mutatorFn(args));\n\n  return new Response(\"Mutation successful\", { status: 200 });\n};\n"
+    ],
+    "description": ""
+  }
+}

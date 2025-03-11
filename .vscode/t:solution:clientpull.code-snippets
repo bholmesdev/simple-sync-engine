@@ -1,0 +1,10 @@
+{
+  "t:solution:clientpull": {
+    "scope": "",
+    "prefix": "t:solution:clientpull",
+    "body": [
+      "  const res = await fetch(`/api/pull?clientId=\\${clientId}`);\n  const { mutations, flushCount }: PullResponse = await res.json();\n  for (const entry of mutations) {\n    const stmt = mutation[entry.mutator](entry.args);\n    await run(db, stmt);\n  }\n  await flushMutationLog(flushCount);\n\n  const file = await db.getDatabaseFile();\n  await optimisticDb.overwriteDatabaseFile(await file.arrayBuffer());\n\n  for (const entry of await getMutationLog()) {\n    const stmt = mutation[entry.mutator](entry.args);\n    await run(optimisticDb, stmt);\n  }\n  invalidateAll();"
+    ],
+    "description": ""
+  }
+}

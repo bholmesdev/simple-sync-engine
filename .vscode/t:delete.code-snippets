@@ -1,0 +1,10 @@
+{
+  "t:delete": {
+    "scope": "",
+    "prefix": "t:delete",
+    "body": [
+      "  await db.sql`DELETE FROM issue`;"
+    ],
+    "description": ""
+  }
+}

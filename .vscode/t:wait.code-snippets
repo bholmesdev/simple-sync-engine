@@ -1,0 +1,10 @@
+{
+  "t:wait": {
+    "scope": "",
+    "prefix": "t:wait",
+    "body": [
+      "  await new Promise(res => setTimeout(res, 5000));"
+    ],
+    "description": ""
+  }
+}

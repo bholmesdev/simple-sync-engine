@@ -1,0 +1,10 @@
+{
+  "t:cookieset": {
+    "scope": "",
+    "prefix": "t:cookieset",
+    "body": [
+      "  if (lastMutation) {\n    cookies.set('lastLogId', lastMutation.id.toString());\n  }"
+    ],
+    "description": ""
+  }
+}

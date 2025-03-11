@@ -1,0 +1,10 @@
+{
+  "t:runstmt": {
+    "scope": "",
+    "prefix": "t:runstmt",
+    "body": [
+      "    const stmt = mutation[entry.mutator](entry.args);\n    await run(db, stmt);"
+    ],
+    "description": ""
+  }
+}
