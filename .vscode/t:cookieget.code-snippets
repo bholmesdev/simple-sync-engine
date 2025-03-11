@@ -3,7 +3,7 @@
     "scope": "",
     "prefix": "t:cookieget",
     "body": [
-      "  const lastLogIdCookie = cookies.get(\"lastLogId\");"
+      "  const lastLogIdCookie = cookies.get(\"lastLogId\");\n  const lastLogId = lastLogIdCookie?.number();"
     ],
     "description": ""
   }

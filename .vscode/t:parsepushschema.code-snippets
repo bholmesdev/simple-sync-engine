@@ -3,7 +3,7 @@
     "scope": "",
     "prefix": "t:parsepushschema",
     "body": [
-      "  const body = await request.json();\n  const payload = payloadSchema.safeParse(body);\n  if (!payload.success) {\n    return new Response(`Invalid payload: \\${payload.error}`, {\n      status: 400,\n    });\n  }"
+      "  const body = await request.json();\n  const payload = payloadSchema.safeParse(body);\n  if (!payload.success) {\n    return new Response(`Invalid payload: \\${payload.error}`, {\n      status: 400,\n    });\n  }\n  const { mutator, args } = payload.data;"
     ],
     "description": ""
   }
