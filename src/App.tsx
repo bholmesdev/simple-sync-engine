@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { RiAddFill, RiCheckFill, RiCloseFill } from "@remixicon/react";
 import type { Issue, IssueStatus } from "./types";
-import { pull, useMigrations, useQuery, mutate } from "./lib/client";
+import { pull, useMigrations, useQuery, mutate, reset } from "./lib/client";
 
 export function App() {
   const isMigrationsLoaded = useMigrations();
@@ -26,16 +26,25 @@ function Home() {
     <div className="py-4">
       <nav className="flex gap-4 items-center mb-4 px-5">
         <h1 className="text-lg">Issues</h1>
-        <button
-          className="ml-auto"
-          onClick={() => {
-            issueDialog.open();
-            setSelectedIndex(issues.length);
-          }}
-        >
-          <span className="sr-only">Add</span>
-          <RiAddFill />
-        </button>
+        <div className="ml-auto flex items-center gap-4">
+          <button
+            className=""
+            onClick={() => {
+              reset();
+            }}
+          >
+            Reset
+          </button>
+          <button
+            onClick={() => {
+              issueDialog.open();
+              setSelectedIndex(issues.length);
+            }}
+          >
+            <span className="sr-only">Add</span>
+            <RiAddFill />
+          </button>
+        </div>
       </nav>
       <ul>
         {issues.map((issue: Issue, index: number) => (

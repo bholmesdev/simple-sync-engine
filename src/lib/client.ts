@@ -43,7 +43,7 @@ export function useQuery<T extends keyof typeof query>(
   return [data, refetch];
 }
 
-async function reset() {
+export async function reset() {
   for (const migration of getResetMigrations()) {
     await run(db, migration);
     await run(db, migration);
