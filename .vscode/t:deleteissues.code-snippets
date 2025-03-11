@@ -1,0 +1,10 @@
+{
+  "t:deleteissues": {
+    "scope": "",
+    "prefix": "t:deleteissues",
+    "body": [
+      "  await optimisticDb.sql`DELETE FROM issue`;"
+    ],
+    "description": ""
+  }
+}

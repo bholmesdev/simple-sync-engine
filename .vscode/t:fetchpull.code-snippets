@@ -1,0 +1,10 @@
+{
+  "t:fetchpull": {
+    "scope": "",
+    "prefix": "t:fetchpull",
+    "body": [
+      "  const { mutations }: PullResponse = await fetch(\"/api/pull\").then((res) =>\n    res.json()\n  );"
+    ],
+    "description": ""
+  }
+}
