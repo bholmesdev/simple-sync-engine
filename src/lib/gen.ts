@@ -27,54 +27,54 @@ function fisherYatesShuffle<T>(array: T[]): T[] {
 
 const baseIssues = [
   {
-    title: "Define Talk Topic & Abstract",
+    title: "Book Flights to Amsterdam",
     description:
-      "Clarify the central theme of the talk, ensuring it aligns with JS World's audience. Draft an abstract that captures the core message in a compelling way.",
+      "Find and book flights to Schiphol Airport (AMS) with good timing and pricing.",
   },
   {
-    title: "Research & Gather Data",
+    title: "Choose a Hotel or Airbnb",
     description:
-      "Collect relevant statistics, case studies, and real-world examples to support key points in the talk. Ensure credibility and up-to-date references.",
+      "Decide between a canal-side hotel in Jordaan, a boutique stay in De Pijp, or an Airbnb with a view.",
   },
   {
-    title: "Outline Talk Structure",
+    title: "Plan a Day Trip to a Castle or Historic Estate",
     description:
-      "Break down the talk into sections (introduction, main points, conclusion) with estimated timing to ensure smooth flow and pacing.",
+      "Visit Muiderslot Castle or Paleis Het Loo for a Versailles-like experience.",
   },
   {
-    title: "Create Slide Deck Draft",
+    title: "Buy Tickets for Rijksmuseum & Van Gogh Museum",
     description:
-      "Design an initial set of slides covering all key points. Use clear visuals and avoid text-heavy slides.",
+      "Reserve entry to see Rembrandt’s 'The Night Watch' and Van Gogh’s masterpieces.",
   },
   {
-    title: "Code Demos & Live Examples",
+    title: "Get Tickets for a Concert or Club Night",
     description:
-      "Develop small, reliable, and engaging code demos to illustrate key concepts. Ensure they run smoothly in different environments.",
+      "Check events at Paradiso, Melkweg, or Shelter for house, electro, or 90s synth pop gigs.",
   },
   {
-    title: "Review & Polish Key Messages",
+    title: "Make Restaurant Reservations",
     description:
-      "Ensure that key takeaways are clear, memorable, and actionable. Revise phrasing for clarity and impact.",
+      "Book tables at De Kas (farm-to-table), Rijks (Michelin-starred), or Moeders (Dutch comfort food).",
   },
   {
-    title: "Rehearse & Time the Talk",
+    title: "Plan a Canal Cruise",
     description:
-      "Do a full run-through to test timing and adjust content if needed. Identify areas that need more or less emphasis.",
+      "Choose between a historic canal tour, a cocktail cruise, or an evening lights cruise.",
   },
   {
-    title: "Prepare for Q&A Session",
+    title: "Rent Bikes & Plan a Ride",
     description:
-      "Anticipate possible audience questions and prepare strong responses. Consider adding backup slides or references for complex questions.",
+      "Rent bikes from MacBike or A-Bike and cycle through Vondelpark, Amsterdamse Bos, or along the Amstel River.",
   },
   {
-    title: "Finalize Slide Design & Branding",
+    title: "Explore a Local Market",
     description:
-      "Apply a polished, consistent design to the slide deck, ensuring it matches the conference theme and branding guidelines.",
+      "Visit Albert Cuyp Market for street food, Noordermarkt for antiques, or Foodhallen for Dutch snacks.",
   },
   {
-    title: "Submit Materials & Travel Logistics",
+    title: "Experience Amsterdam’s Nightlife",
     description:
-      "Ensure all required materials (slides, bio, talk summary) are submitted to JS World on time. Confirm travel, accommodation, and any AV setup needs.",
+      "Bar-hop in the Red Light District, grab craft beers at Brouwerij 't IJ, or find an underground club night.",
   },
 ];
 
