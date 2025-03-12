@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { RiAddFill, RiCheckFill, RiCloseFill } from "@remixicon/react";
+import {
+  RiAddFill,
+  RiCheckFill,
+  RiCloseFill,
+  RiLock2Line,
+} from "@remixicon/react";
 import type { Issue, IssueStatus } from "./types";
 import { pull, useMigrations, useQuery, mutate } from "./lib/client";
+import { generateIssue, incrementIdx } from "./lib/gen";
 
 export function App() {
   const isMigrationsLoaded = useMigrations();
@@ -12,9 +18,16 @@ export function App() {
 
 function Home() {
   const [issues, refetchIssues] = useQuery("getIssues", {});
+  const [generatedIssue, setGeneratedIssue] = useState(generateIssue());
   const issueDialog = useDialog();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const selectedIssue: Issue | undefined = issues[selectedIndex];
+
+  function openDialog() {
+    issueDialog.open();
+    setGeneratedIssue(generateIssue());
+    console.log({ generatedIssue });
+  }
 
   useEffect(() => {
     pull();
@@ -29,7 +42,7 @@ function Home() {
         <button
           className="ml-auto"
           onClick={() => {
-            issueDialog.open();
+            openDialog();
             setSelectedIndex(issues.length);
           }}
         >
@@ -63,6 +76,7 @@ function Home() {
         ))}
       </ul>
       <IssueDialog
+        generatedIssue={generatedIssue}
         issue={selectedIssue}
         refetchIssues={refetchIssues}
         dialog={issueDialog}
@@ -136,10 +150,12 @@ function IssueRow({
 
 function IssueDialog({
   issue,
+  generatedIssue,
   refetchIssues,
   dialog,
 }: {
   issue?: Issue;
+  generatedIssue: Omit<Issue, "id">;
   refetchIssues: () => void;
   dialog: Dialog;
 }) {
@@ -158,6 +174,7 @@ function IssueDialog({
         // TODO: user table
         owner: "Anonymous Buffalo",
       });
+      incrementIdx();
     } else {
       await mutate("createIssue", {
         title,
@@ -186,21 +203,11 @@ function IssueDialog({
         }}
         onSubmit={onSubmit}
       >
-        <div className="flex justify-between gap-2">
-          <input
-            className="text-lg font-medium flex-1 p-2 outline-none"
-            type="text"
-            name="title"
-            defaultValue={issue?.title}
-            placeholder="Issue title"
-            required
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                descriptionRef.current?.focus();
-              }
-            }}
-          />
+        <div className="relative flex gap-2 items-center justify-between">
+          <p className="mx-2 text-zinc-500 dark:text-zinc-400 text-sm flex items-center gap-2 border border-zinc-200 dark:border-zinc-700 rounded-md px-2 py-1 w-max">
+            <RiLock2Line size={14} />
+            Read only
+          </p>
           <button
             type="button"
             className="p-2 rounded"
@@ -211,12 +218,28 @@ function IssueDialog({
             <RiCloseFill />
           </button>
         </div>
+        <input
+          className="text-lg font-medium flex-1 p-2 outline-none"
+          type="text"
+          name="title"
+          value={issue?.title ?? generatedIssue.title}
+          placeholder="Issue title"
+          required
+          readOnly
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              descriptionRef.current?.focus();
+            }
+          }}
+        />
         <textarea
           ref={descriptionRef}
           className="px-2 sm:h-[20rem] h-[10rem] max-h-[40dvh] resize-none outline-none"
           name="description"
           placeholder="Add description..."
-          defaultValue={issue?.description}
+          readOnly
+          value={issue?.description ?? generatedIssue.description}
         />
         <div className="flex items-center gap-2 text-sm">
           {issue && (
