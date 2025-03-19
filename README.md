@@ -1,5 +1,7 @@
 # Simple Sync Engine
 
+[**As seen at JS world**](https://www.youtube.com/live/5mn3EpWCcJs?t=2356) 🎥
+
 This is a simple, not-so-production-ready implementation of a sync engine. We use SQLite on the client and server, and use a simplified version of [Replicache's "push" and "pull" model](https://doc.replicache.dev/concepts/how-it-works#sync-details) to sync changes.
 
 ## Purpose 🎯
